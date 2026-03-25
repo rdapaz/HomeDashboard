@@ -1,6 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { DoorOpen, DoorClosed, Loader, Warehouse, Clock } from 'lucide-react';
+import { Loader, Warehouse, Clock } from 'lucide-react';
+
+function GarageIcon({ className, color }) {
+  const filterStyle = color === 'green'
+    ? { filter: 'brightness(0) saturate(100%) invert(48%) sepia(98%) saturate(401%) hue-rotate(90deg) brightness(95%) contrast(96%)' }
+    : color === 'red'
+    ? { filter: 'brightness(0) saturate(100%) invert(28%) sepia(95%) saturate(5000%) hue-rotate(350deg) brightness(95%) contrast(96%)' }
+    : { filter: 'brightness(0) saturate(100%) invert(60%)' };
+
+  return (
+    <img
+      src="/garage-icon.svg"
+      alt="Garage"
+      className={className}
+      style={filterStyle}
+    />
+  );
+}
 
 export default function GarageWidget() {
   const [status, setStatus] = useState('Unknown');
@@ -73,13 +90,13 @@ export default function GarageWidget() {
     setLoading(false);
   };
 
-  const StatusIcon = status === 'Open' ? DoorOpen :
-                     status === 'Closed' ? DoorClosed :
-                     Loader;
+  const iconColor = status === 'Open' ? 'green' :
+                    status === 'Closed' ? 'red' :
+                    'gray';
 
-  const statusColor = status === 'Open' ? 'text-green-500' :
-                      status === 'Closed' ? 'text-red-500' :
-                      'text-gray-400';
+  const statusTextColor = status === 'Open' ? 'text-green-500' :
+                          status === 'Closed' ? 'text-red-500' :
+                          'text-gray-400';
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-3">
@@ -89,10 +106,12 @@ export default function GarageWidget() {
       </div>
 
       <div className="text-center">
-        <StatusIcon
-          className={`h-10 w-10 mx-auto ${statusColor} ${status === 'Unknown' ? 'animate-spin' : ''}`}
-        />
-        <p className="mt-1 text-sm font-semibold text-gray-800 dark:text-white">
+        {status === 'Unknown' ? (
+          <Loader className="h-10 w-10 mx-auto text-gray-400 animate-spin" />
+        ) : (
+          <GarageIcon className="h-10 w-10 mx-auto" color={iconColor} />
+        )}
+        <p className={`mt-1 text-sm font-semibold ${statusTextColor}`}>
           {status}
         </p>
         {status === 'Open' && openMinutes != null && (
