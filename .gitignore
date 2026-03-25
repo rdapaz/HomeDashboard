@@ -1,0 +1,42 @@
+# Dependencies
+frontend/node_modules/
+node_modules/
+backend/__pycache__/
+backend/services/__pycache__/
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# Environment
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite3
+
+# Build output
+frontend/build/
+
+# GTFS data (large, downloaded at setup)
+backend/gtfs_data/*.zip
+backend/gtfs_data/*.txt
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Package lock (frontend)
+frontend/package-lock.json
