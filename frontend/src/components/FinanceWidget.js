@@ -31,22 +31,22 @@ export default function FinanceWidget() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <DollarSign className="text-indigo-500 dark:text-indigo-400" />
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Finance</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-3">
+      <div className="flex items-center gap-2 mb-2">
+        <DollarSign className="text-indigo-500 dark:text-indigo-400 h-4 w-4" />
+        <h2 className="text-sm font-semibold text-gray-800 dark:text-white">Finance</h2>
       </div>
 
-      {error && <p className="text-red-400 text-sm">{error}</p>}
+      {error && <p className="text-red-400 text-xs">{error}</p>}
 
       {/* BTC + FX row */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
+      <div className="grid grid-cols-2 gap-2 mb-2">
         {/* Bitcoin */}
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mb-1">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
+          <div className="flex items-center gap-1 text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">
             <Bitcoin className="h-3 w-3" /> BTC/AUD
           </div>
-          <div className="text-lg font-bold text-gray-900 dark:text-white">
+          <div className="text-sm font-bold text-gray-900 dark:text-white">
             {data?.bitcoin?.price_aud ? formatAUD(data.bitcoin.price_aud) : '-'}
           </div>
           {data?.bitcoin?.change_24h_pct != null && (
@@ -60,13 +60,13 @@ export default function FinanceWidget() {
         </div>
 
         {/* USD/AUD */}
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">USD/AUD</div>
-          <div className="text-lg font-bold text-gray-900 dark:text-white">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
+          <div className="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">USD/AUD</div>
+          <div className="text-sm font-bold text-gray-900 dark:text-white">
             {data?.exchange_rate?.usd_to_aud ? `$${data.exchange_rate.usd_to_aud.toFixed(4)}` : '-'}
           </div>
           {data?.exchange_rate?.date && (
-            <div className="text-xs text-gray-500 dark:text-gray-400">
+            <div className="text-[10px] text-gray-500 dark:text-gray-400">
               {data.exchange_rate.date}
             </div>
           )}

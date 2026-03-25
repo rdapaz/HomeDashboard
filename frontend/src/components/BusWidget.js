@@ -29,34 +29,34 @@ export default function BusWidget() {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <Bus className="text-indigo-500 dark:text-indigo-400" />
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Transperth Buses</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-3">
+      <div className="flex items-center gap-2 mb-2">
+        <Bus className="text-indigo-500 dark:text-indigo-400 h-4 w-4" />
+        <h2 className="text-sm font-semibold text-gray-800 dark:text-white">Transperth Buses</h2>
       </div>
 
-      {error && <p className="text-red-400 text-sm">{error}</p>}
+      {error && <p className="text-red-400 text-xs">{error}</p>}
 
-      <div className="space-y-3">
+      <div className="space-y-1.5">
         {data?.stops?.map((stop, i) => (
-          <div key={i} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">
+          <div key={i} className="bg-gray-50 dark:bg-gray-700 rounded-lg px-2.5 py-1.5">
+            <div className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">
               {stop.stop}
             </div>
 
             {stop.departures?.length > 0 ? (
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {stop.departures.map((dep, j) => (
                   <div key={j} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-xs font-bold px-2 py-0.5 rounded ${ROUTE_COLORS[dep.route] || 'bg-gray-200 text-gray-700'}`}>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[10px] font-bold px-1.5 py-0 rounded ${ROUTE_COLORS[dep.route] || 'bg-gray-200 text-gray-700'}`}>
                         {dep.route}
                       </span>
-                      <span className="text-sm text-gray-700 dark:text-gray-200">
+                      <span className="text-xs text-gray-700 dark:text-gray-200">
                         {dep.departure}
                       </span>
                     </div>
-                    <span className={`text-sm font-semibold ${
+                    <span className={`text-xs font-semibold ${
                       dep.minutes <= 5 ? 'text-red-500' :
                       dep.minutes <= 15 ? 'text-yellow-500' :
                       'text-gray-500 dark:text-gray-400'
@@ -69,7 +69,7 @@ export default function BusWidget() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-gray-400">No upcoming departures</p>
+              <p className="text-[10px] text-gray-400">No upcoming departures</p>
             )}
           </div>
         ))}

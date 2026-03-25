@@ -27,16 +27,16 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       {/* Header */}
-      <header className="px-6 py-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+      <header className="px-4 py-2 flex items-center justify-between">
+        <h1 className="text-lg font-bold text-gray-800 dark:text-white">
           Home Dashboard
         </h1>
         <DarkModeToggle isDark={isDark} onToggle={toggleDark} />
       </header>
 
       {/* Dashboard Grid */}
-      <main className="px-6 pb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <main className="px-4 pb-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {/* Row 1 */}
           <WeatherWidget />
           <TrafficWidget />

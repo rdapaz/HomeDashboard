@@ -34,11 +34,11 @@ export default function WeatherWidget() {
     <WidgetCard title="Weather - Bibra Lake" icon={<CloudSun />}>
       {/* Current conditions */}
       {data.current && data.current.temp !== null && (
-        <div className="mb-4 flex items-center gap-4">
-          <div className="text-4xl font-bold text-gray-900 dark:text-white">
+        <div className="mb-2 flex items-center gap-3">
+          <div className="text-3xl font-bold text-gray-900 dark:text-white">
             {Math.round(data.current.temp)}&deg;C
           </div>
-          <div className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
+          <div className="text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
             <div className="flex items-center gap-1">
               <Droplets className="h-3 w-3" /> {data.current.humidity}%
             </div>
@@ -50,7 +50,7 @@ export default function WeatherWidget() {
       )}
 
       {/* Today & Tomorrow */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <DayForecast label="Today" day={data.today} />
         <DayForecast label="Tomorrow" day={data.tomorrow} />
       </div>
@@ -61,17 +61,17 @@ export default function WeatherWidget() {
 function DayForecast({ label, day }) {
   if (!day) return null;
   return (
-    <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-      <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">{label}</div>
-      <div className="flex items-center gap-1 mb-1">
-        <Thermometer className="h-4 w-4 text-blue-400" />
-        <span className="text-sm text-gray-700 dark:text-gray-200">
+    <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
+      <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-0.5">{label}</div>
+      <div className="flex items-center gap-1 mb-0.5">
+        <Thermometer className="h-3 w-3 text-blue-400" />
+        <span className="text-xs text-gray-700 dark:text-gray-200">
           {day.temp_min !== null ? `${day.temp_min}` : '?'}&deg; - {day.temp_max !== null ? `${day.temp_max}` : '?'}&deg;
         </span>
       </div>
       <p className="text-xs text-gray-600 dark:text-gray-300">{day.short_text}</p>
       {day.rain_chance > 0 && (
-        <div className="flex items-center gap-1 mt-1">
+        <div className="flex items-center gap-1 mt-0.5">
           <Droplets className="h-3 w-3 text-blue-400" />
           <span className="text-xs text-gray-500 dark:text-gray-400">{day.rain_chance}% chance</span>
         </div>
@@ -82,10 +82,10 @@ function DayForecast({ label, day }) {
 
 function WidgetCard({ title, icon, children }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-3">
+      <div className="flex items-center gap-2 mb-2">
         <span className="text-indigo-500 dark:text-indigo-400">{icon}</span>
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">{title}</h2>
+        <h2 className="text-sm font-semibold text-gray-800 dark:text-white">{title}</h2>
       </div>
       {children}
     </div>

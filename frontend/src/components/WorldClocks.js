@@ -36,23 +36,23 @@ export default function WorldClocks() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <Clock className="text-indigo-500 dark:text-indigo-400" />
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white">World Clocks</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-3">
+      <div className="flex items-center gap-2 mb-2">
+        <Clock className="text-indigo-500 dark:text-indigo-400 h-4 w-4" />
+        <h2 className="text-sm font-semibold text-gray-800 dark:text-white">World Clocks</h2>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         {CITIES.map((city) => (
-          <div key={city.name} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 text-center">
-            <div className="text-lg mb-1">{city.flag}</div>
-            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
+          <div key={city.name} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2 text-center">
+            <div className="text-sm">{city.flag}</div>
+            <div className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase">
               {city.name}
             </div>
-            <div className="text-xl font-mono font-bold text-gray-900 dark:text-white mt-1">
+            <div className="text-lg font-mono font-bold text-gray-900 dark:text-white">
               {formatTime(city.timezone)}
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <div className="text-[10px] text-gray-500 dark:text-gray-400">
               {formatDate(city.timezone)}
             </div>
           </div>
