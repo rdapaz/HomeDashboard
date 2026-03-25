@@ -18,6 +18,9 @@ TRAFFIC_POINTS = [
     (-32.0206, 115.8400, "Canning Hwy (near Riseley St)"),
     (-32.0580, 115.8170, "Leach Hwy (near Stock Rd)"),
     (-32.0290, 115.7640, "Fremantle Hospital area"),
+    (-32.0440, 115.7570, "Hampton Rd (near South St)"),
+    (-32.0710, 115.8230, "North Lake Rd (near Farrington Rd)"),
+    (-32.0580, 115.7820, "Stock Rd (near Spearwood Ave)"),
 ]
 
 # City of Perth Parking
