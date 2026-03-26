@@ -50,3 +50,27 @@ CACHE_ASX = 900            # 15 minutes
 
 # Database
 DATABASE_PATH = "dashboard.db"
+
+# go2rtc proxy for UniFi Protect cameras
+GO2RTC_HOST = "localhost"
+GO2RTC_PORT = 1984
+GO2RTC_URL = f"http://{GO2RTC_HOST}:{GO2RTC_PORT}"
+
+# Camera definitions: id must match go2rtc stream name, name is display label
+CAMERAS = [
+    {"id": "front_ne1", "name": "Front NE1 Facing"},
+    {"id": "front_ne2", "name": "Front NE2 Facing"},
+    {"id": "front_nw", "name": "Front NW Facing"},
+    {"id": "doorbell", "name": "Doorbell"},
+    {"id": "entry_corridor", "name": "Entry Corridor"},
+    {"id": "rear_sw", "name": "Rear SW Facing"},
+    {"id": "kitchen_dining", "name": "Kitchen / Dining"},
+    {"id": "service_corridor", "name": "Service Corridor"},
+]
+
+# CHANGEME: Carousel timing (seconds)
+CAROUSEL_CAMERA_DURATION = 240   # time on cameras page before switching to dashboard
+CAROUSEL_DASHBOARD_DURATION = 30  # time on dashboard page before switching back to cameras
+
+# CHANGEME: seconds each individual camera is shown before cycling to the next
+CAMERA_CYCLE_DURATION = 30

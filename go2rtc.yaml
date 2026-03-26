@@ -1,0 +1,26 @@
+streams:
+  front_ne1:
+    - "ffmpeg:rtsps://192.168.1.4:7441/QUWEOpaaj8FxTulL?enableSrtp#video=copy"
+  front_ne2:
+    - "ffmpeg:rtsps://192.168.1.4:7441/o9BPDrf8aAYYDeVI?enableSrtp#video=copy"
+  front_nw:
+    - "ffmpeg:rtsps://192.168.1.4:7441/FRnqAHKJhciXUIAg?enableSrtp#video=copy"
+  doorbell:
+    - "ffmpeg:rtsps://192.168.1.4:7441/cdcrqUPVCKOH58yx?enableSrtp#video=copy"
+  entry_corridor:
+    - "ffmpeg:rtsps://192.168.1.4:7441/ps5zA5UcjB4hy4z4?enableSrtp#video=copy"
+  rear_sw:
+    - "ffmpeg:rtsps://192.168.1.4:7441/6RXtG165pG0WSAe5?enableSrtp#video=copy"
+  kitchen_dining:
+    - "ffmpeg:rtsps://192.168.1.4:7441/U9B6AW3sogULKcVP?enableSrtp#video=copy"
+  service_corridor:
+    - "ffmpeg:rtsps://192.168.1.4:7441/6RXtG165pG0WSAe5?enableSrtp#video=copy"
+
+ffmpeg:
+  bin: "C:\\Users\\AndreGoncalves\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.1-full_build\\bin\\ffmpeg.exe"
+
+api:
+  listen: ":1984"
+
+webrtc:
+  listen: ":8555"

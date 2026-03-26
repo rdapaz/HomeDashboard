@@ -2,10 +2,14 @@
 
 import asyncio
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+BUILD_DIR = Path(__file__).resolve().parent.parent / "frontend" / "build"
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from database import init_db
@@ -15,6 +19,7 @@ from services.parking import fetch_parking
 from services.finance import fetch_finance, fetch_btc, fetch_fx, fetch_asx
 from services.garage import fetch_garage_status, toggle_garage, fetch_garage_events
 from services.bus import fetch_bus_departures
+from services.camera import fetch_cameras
 
 
 scheduler = AsyncIOScheduler()
@@ -117,8 +122,24 @@ async def api_bus():
     return fetch_bus_departures()
 
 
-# In production, serve the React build
-# app.mount("/", StaticFiles(directory="../frontend/build", html=True), name="static")
+@app.get("/api/cameras")
+async def api_cameras():
+    return await fetch_cameras()
+
+
+# Serve React static assets (JS, CSS, media)
+app.mount("/static", StaticFiles(directory=str(BUILD_DIR / "static")), name="static-assets")
+
+
+# Catch-all: serve React index.html for any non-API route (SPA support)
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str):
+    # Serve actual files if they exist in the build directory
+    file_path = BUILD_DIR / full_path
+    if full_path and file_path.is_file():
+        return FileResponse(file_path)
+    # Otherwise serve index.html for SPA routing
+    return FileResponse(BUILD_DIR / "index.html")
 
 
 if __name__ == "__main__":

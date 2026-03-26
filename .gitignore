@@ -40,3 +40,13 @@ npm-debug.log*
 
 # Package lock (frontend)
 frontend/package-lock.json
+
+# go2rtc binary and test files
+go2rtc.exe
+go2rtc_win64.zip
+test_frame.jpg
+test_stream.mp4
+ffmpeg_test.jpg
+
+# Claude Code settings
+.claude/

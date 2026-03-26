@@ -16,9 +16,10 @@ python --version
 
 ### 2. Node.js 18+
 
-Download the LTS version from https://nodejs.org/ and install.
+Download the LTS version from https://nodejs.org/ or install via winget:
 
 ```powershell
+winget install OpenJS.NodeJS.LTS
 node --version
 npm --version
 ```
@@ -27,12 +28,30 @@ npm --version
 
 Download from https://git-scm.com/download/win and install.
 
+### 4. FFmpeg
+
+Required by go2rtc for camera streaming. Install via winget:
+
+```powershell
+winget install Gyan.FFmpeg
+```
+
+After installation, restart your shell so FFmpeg is on PATH. Verify:
+
+```powershell
+ffmpeg -version
+```
+
+### 5. go2rtc
+
+Download the latest Windows release from https://github.com/AlexxIT/go2rtc/releases. Place `go2rtc.exe` in the project root directory.
+
 ## Installation
 
 ### 1. Clone the Repository
 
 ```powershell
-cd C:\Users\%USERNAME%
+cd C:\Users\%USERNAME%\Documents\Projects
 git clone https://github.com/rdapaz/HomeDashboard.git
 cd HomeDashboard
 ```
@@ -59,87 +78,121 @@ tar -xf google_transit.zip stops.txt routes.txt stop_times.txt trips.txt calenda
 cd ..
 ```
 
-### 3. Configure
+### 3. Configure Backend
 
 Edit `backend/config.py`:
 
-- **TomTom API key**: Sign up free at https://developer.tomtom.com/ and paste your key into `TOMTOM_API_KEY`
+- **TomTom API key**: Sign up free at https://developer.tomtom.com/ and set `TOMTOM_API_KEY`
 - **Garage Pi IP**: Update `GARAGE_PI_HOST` if different from `192.168.1.143`
-- Everything else works out of the box
+- **Camera list**: Update the `CAMERAS` list with your camera IDs and display names (IDs must match go2rtc stream names)
+- **Carousel timing**: Adjust `CAROUSEL_CAMERA_DURATION`, `CAROUSEL_DASHBOARD_DURATION`, and `CAMERA_CYCLE_DURATION` as desired
 
-### 4. Frontend Setup
+### 4. Configure Camera Streaming
+
+Edit `go2rtc.yaml` in the project root:
+
+1. **Get RTSP URLs from UniFi Protect**: For each camera, go to Camera Settings > Advanced > RTSP and copy the **medium-quality** RTSP URL. High-quality streams use H.265 which does not play reliably in browsers.
+
+2. **Configure streams**: Each stream must use the `ffmpeg:` prefix and `#video=copy` suffix:
+
+```yaml
+streams:
+  front_ne1:
+    - "ffmpeg:rtsps://192.168.1.4:7441/YOUR_STREAM_KEY?enableSrtp#video=copy"
+  doorbell:
+    - "ffmpeg:rtsps://192.168.1.4:7441/ANOTHER_STREAM_KEY?enableSrtp#video=copy"
+```
+
+3. **Set FFmpeg path**: Update the `ffmpeg.bin` value to match your FFmpeg installation:
+
+```yaml
+ffmpeg:
+  bin: "C:\\Users\\YourUser\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.1-full_build\\bin\\ffmpeg.exe"
+```
+
+To find your FFmpeg path, run: `where.exe ffmpeg`
+
+4. **Match IDs**: The stream names in `go2rtc.yaml` (e.g. `front_ne1`) must exactly match the `id` values in `backend/config.py` `CAMERAS` list.
+
+### 5. Frontend Setup
 
 ```powershell
 cd ..\frontend
 npm install
-```
-
-### 5. Build Frontend for Production
-
-```powershell
 npm run build
-```
-
-### 6. Enable Static File Serving
-
-In `backend/main.py`, uncomment the last `app.mount` line to serve the React build:
-
-```python
-app.mount("/", StaticFiles(directory="../frontend/build", html=True), name="static")
 ```
 
 ## Running
 
-### Option A: Development Mode (two terminals)
+### Starting All Services (Production)
 
-**Terminal 1 - Backend:**
+You need three processes running:
+
+**1. go2rtc (camera streaming):**
 ```powershell
-cd C:\Users\%USERNAME%\HomeDashboard\backend
+cd C:\Users\%USERNAME%\Documents\Projects\HomeDashboard
+.\go2rtc.exe -config go2rtc.yaml
+```
+
+**2. Backend (API + static files):**
+```powershell
+cd C:\Users\%USERNAME%\Documents\Projects\HomeDashboard\backend
+venv\Scripts\activate
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+**3. Browser:**
+Open http://localhost:8000 in Chrome (fullscreen / kiosk mode).
+
+### Development Mode (two terminals + go2rtc)
+
+**Terminal 1 - go2rtc:**
+```powershell
+cd C:\Users\%USERNAME%\Documents\Projects\HomeDashboard
+.\go2rtc.exe -config go2rtc.yaml
+```
+
+**Terminal 2 - Backend:**
+```powershell
+cd C:\Users\%USERNAME%\Documents\Projects\HomeDashboard\backend
 venv\Scripts\activate
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-**Terminal 2 - Frontend:**
+**Terminal 3 - Frontend:**
 ```powershell
-cd C:\Users\%USERNAME%\HomeDashboard\frontend
+cd C:\Users\%USERNAME%\Documents\Projects\HomeDashboard\frontend
 npm start
 ```
 
 Access at http://localhost:3000
 
-### Option B: Production Mode (single process)
-
-After building the frontend and enabling static file serving:
-
-```powershell
-cd C:\Users\%USERNAME%\HomeDashboard\backend
-venv\Scripts\activate
-uvicorn main:app --host 0.0.0.0 --port 8000
-```
-
-Access at http://localhost:8000
-
 ## Auto-Start on Boot
 
 ### Using Task Scheduler
 
-1. Open **Task Scheduler** (search in Start menu)
-2. Click **Create Task** (not Basic Task)
-3. **General** tab:
-   - Name: `HomeDashboard`
-   - Check "Run whether user is logged on or not"
-   - Check "Run with highest privileges"
-4. **Triggers** tab:
-   - New trigger: "At startup"
-   - Delay task for: 30 seconds
-5. **Actions** tab:
-   - New action: Start a program
-   - Program: `C:\Users\%USERNAME%\HomeDashboard\backend\venv\Scripts\uvicorn.exe`
+Create **two** scheduled tasks:
+
+#### Task 1: go2rtc
+
+1. Open **Task Scheduler** > **Create Task**
+2. **General**: Name `go2rtc`, check "Run whether user is logged on or not"
+3. **Triggers**: New > "At startup", delay 15 seconds
+4. **Actions**: Start a program
+   - Program: `C:\Users\%USERNAME%\Documents\Projects\HomeDashboard\go2rtc.exe`
+   - Arguments: `-config go2rtc.yaml`
+   - Start in: `C:\Users\%USERNAME%\Documents\Projects\HomeDashboard`
+
+#### Task 2: HomeDashboard Backend
+
+1. **Create Task**
+2. **General**: Name `HomeDashboard`, check "Run whether user is logged on or not", check "Run with highest privileges"
+3. **Triggers**: New > "At startup", delay 30 seconds
+4. **Actions**: Start a program
+   - Program: `C:\Users\%USERNAME%\Documents\Projects\HomeDashboard\backend\venv\Scripts\uvicorn.exe`
    - Arguments: `main:app --host 0.0.0.0 --port 8000`
-   - Start in: `C:\Users\%USERNAME%\HomeDashboard\backend`
-6. **Settings** tab:
-   - Check "If the task fails, restart every: 1 minute"
-   - Attempt to restart up to: 3 times
+   - Start in: `C:\Users\%USERNAME%\Documents\Projects\HomeDashboard\backend`
+5. **Settings**: Check "If the task fails, restart every: 1 minute", up to 3 times
 
 ### Auto-Launch Browser in Kiosk Mode
 
@@ -159,7 +212,7 @@ Or for Edge:
 The Transperth GTFS feed updates periodically. To refresh:
 
 ```powershell
-cd C:\Users\%USERNAME%\HomeDashboard\backend\gtfs_data
+cd C:\Users\%USERNAME%\Documents\Projects\HomeDashboard\backend\gtfs_data
 curl -L -o google_transit.zip "https://www.transperth.wa.gov.au/TimetablePDFs/GoogleTransit/Production/google_transit.zip"
 tar -xf google_transit.zip stops.txt routes.txt stop_times.txt trips.txt calendar.txt calendar_dates.txt
 ```
@@ -167,6 +220,30 @@ tar -xf google_transit.zip stops.txt routes.txt stop_times.txt trips.txt calenda
 Then restart the backend service.
 
 ## Troubleshooting
+
+### Cameras show black/green screen
+
+- You are likely using high-quality RTSP streams (H.265/HEVC). Switch to **medium-quality** streams (H.264) in UniFi Protect
+- Verify RTSP is enabled: UniFi Protect > Camera Settings > Advanced > Enable RTSP
+- Ensure all three quality levels (high/medium/low) have RTSP enabled
+
+### Cameras show "Offline"
+
+- Check go2rtc is running: http://localhost:1984
+- Check the camera API: `curl http://localhost:8000/api/cameras`
+- Verify stream names in `go2rtc.yaml` match camera IDs in `config.py`
+
+### Cameras show FFmpeg errors
+
+- Ensure FFmpeg is installed and the path in `go2rtc.yaml` `ffmpeg.bin` is correct
+- Test FFmpeg can connect: `ffmpeg -rtsp_transport tcp -i "rtsps://192.168.1.4:7441/YOUR_KEY?enableSrtp" -frames:v 1 -update 1 test.jpg`
+- Check the RTSP URL is valid and the camera is online
+
+### go2rtc stream.html works but dashboard cameras don't
+
+- Hard refresh the dashboard: Ctrl+Shift+R
+- Check browser console (F12) for errors
+- Ensure the backend was restarted after config changes
 
 ### Backend won't start
 
@@ -206,8 +283,10 @@ pip list | findstr fastapi
 
 The dashboard needs access to:
 
-| Service | URL | Port |
-|---------|-----|------|
+| Service | URL / Host | Port |
+|---------|-----------|------|
+| go2rtc API | localhost | 1984 |
+| UniFi Protect RTSPS | 192.168.1.4 | 7441 |
 | BOM Weather | api.weather.bom.gov.au | 443 |
 | TomTom Traffic | api.tomtom.com | 443 |
 | CoinGecko | api.coingecko.com | 443 |
